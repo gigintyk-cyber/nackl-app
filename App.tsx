@@ -3,9 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, TouchableOpacity } from "react-native";
 import DareFeed from "./screens/DareFeed";
-import Login from "./screens/Login";
+import LoginScreen from "./screens/Login";
 import "./global.css";
-import { LogIn } from "lucide-react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +34,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Dare" component={DareFeed} />
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Login" component={LoginScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

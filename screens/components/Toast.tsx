@@ -30,11 +30,17 @@ export default function Toast({ message, onHide }: ToastProps) {
   }, []);
 
   return (
-    <Animated.View
-      style={{ transform: [{ translateY }] }}
-      className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-black px-4 py-2 rounded-full shadow"
-    >
-      <Text className="text-white text-sm">{message}</Text>
-    </Animated.View>
+   <Animated.View
+  style={{
+    transform: [
+      { translateY },
+      { translateX: -50 }, // shift back by 50% since we center with left:'50%'
+    ],
+    left: '50%',
+  }}
+  className="absolute bottom-10 bg-black px-4 py-2 rounded-full shadow"
+>
+  <Text className="text-white text-sm text-center">{message}</Text>
+</Animated.View>
   );
 }

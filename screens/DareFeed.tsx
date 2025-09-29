@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Bookmark, Plus } from "lucide-react-native";
+import { Bookmark, Bookmark as BookmarkFilled, Plus } from "lucide-react-native";
 import Toast from "./components/Toast"; 
 
 export default function DareFeed() {
@@ -10,7 +10,7 @@ export default function DareFeed() {
   const [toastMessage, setToastMessage] = useState("");
   const dares = [
     {
-      title: "Hold a plank for 60 seconds",
+      title: "Hold a plank for 60 secondsHold a plank for 60 seconds while keeping your core tight, back straight, and avoiding any sagging in your hips to maximize strength and stability gains",
       people: "150+",
       desc: "Get into a push-up position, but rest on your forearms instead of your hands. Keep your body straight.",
       img: "https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg"
@@ -41,7 +41,35 @@ export default function DareFeed() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 px-4">
+         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-4 px-2">
+            <View className="flex-row gap-x-4">
+              {[
+                { name: 'MoneyMoves', img: 'https://i.pravatar.cc/50?img=1' },
+                { name: 'BodyBeat', img: 'https://i.pravatar.cc/50?img=2' },
+                { name: 'MindBoost', img: 'https://i.pravatar.cc/50?img=3' },
+                { name: 'SkillUp', img: 'https://i.pravatar.cc/50?img=4' },
+                { name: 'SkillUp', img: 'https://i.pravatar.cc/50?img=4' },
+                { name: 'SkillUp', img: 'https://i.pravatar.cc/50?img=4' },
+              ].map((category, idx) => {
+                const isActive = idx === 0; // Example: first tab active
+                return (
+                  <TouchableOpacity key={idx} className="items-center">
+                    {/* Rounded Image */}
+                    <Image
+                      source={{ uri: category.img }}
+                      className="w-16 h-16 rounded-full"
+                    />
+                    {/* Category Text */}
+                    <Text className="text-xs mt-1 font-semibold">{category.name}</Text>
+                    {/* Active underline */}
+                    {isActive && <View className="h-1 w-full bg-mint mt-1 rounded-full" />}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+         </ScrollView>
 
+        
         {/* Stats Row */}
         <View className="flex-row h-[52px] justify-between items-center bg-secondary border border-green-500 rounded-xl p-3 mt-3">
           <Text className="text-sm">⚡ 56 Dares</Text>
@@ -100,7 +128,7 @@ export default function DareFeed() {
                     className="w-12 h-12 rounded-full mr-4"
                   />
                   <View className="flex-1">
-                    <Text className="font-extrabold text-base">{dare.title}</Text>
+                    <Text className="font-bold text-base" numberOfLines={1} ellipsizeMode="tail">{dare.title}</Text>
                     <Text className="text-[13px] font-normal text-gray-900 mt-1">
                       <Text className="font-semibold">{dare.people}</Text> People dared this
                     </Text>
@@ -108,8 +136,12 @@ export default function DareFeed() {
                 </View>
 
                 {/* Bookmark Icon */}
-                <TouchableOpacity onPress={() => handleBookmark(idx)}>
-                  <Bookmark size={22} color={isBookmarked ? "yellow" : "gray"} />
+                <TouchableOpacity onPress={() => handleBookmark(idx)} className="pl-4">
+                  {isBookmarked ? (
+                    <BookmarkFilled size={22} color={isBookmarked ? "#FCD34D" : "gray"} fill={isBookmarked ? "#FCD34D" : "none"} />
+                  ) : (
+                    <Bookmark size={22} color="gray" />
+                  )}
                 </TouchableOpacity>
               </View>
 
