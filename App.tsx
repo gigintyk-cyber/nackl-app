@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, TouchableOpacity } from "react-native";
 import DareFeed from "./screens/DareFeed";
 import "./global.css";
+import AuthNav from "./screens/Login/AuthNav";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +20,7 @@ function HomeScreen({ navigation }: any) {
       </TouchableOpacity>
       <TouchableOpacity
         className="bg-green-500 px-4 py-2 rounded-xl mt-4"
-        onPress={() => navigation.navigate("Login")}
+        onPress={() => navigation.navigate("AuthNav")}
       >
         <Text className="text-white">Go to Login Page</Text>
       </TouchableOpacity>
@@ -33,6 +34,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Dare" component={DareFeed} />
+        <Stack.Screen name ="AuthNav" component={AuthNav} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

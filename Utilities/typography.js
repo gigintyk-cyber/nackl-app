@@ -14,6 +14,8 @@ export const Typography = {
   H5: { fontSize: normalize(18), className: 'font-semibold text-gray-900' },
   H6: { fontSize: normalize(16), className: 'font-semibold text-gray-900' },
 
+  Label: { fontSize: normalize(13), className: 'font-semibold text-gray-500' },
+
   BodyLarge: { fontSize: normalize(16), className: 'text-gray-700' },
   Body: { fontSize: normalize(14), className: 'text-gray-700' },
   BodySmall: { fontSize: normalize(12), className: 'text-gray-500' },
