@@ -9,17 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  EvilIcons,
-  Fontisto,
-  Ionicons,
-  MaterialCommunityIcons,
-  Octicons,
-  SimpleLineIcons,
-} from "@expo/vector-icons";
+import { EvilIcons, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { LucideEye, LucideEyeClosed } from "lucide-react-native";
 import { BackButton } from "../components/BackButton";
+import { FormInputs } from "./FormInputs";
+import { usePostLogin } from "../../APIHooks/UsePostLogin";
+import { emailValidation, PasswordValidation } from "./RegexValidations";
 
 const MainAuthScreen = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -39,18 +34,18 @@ const MainAuthScreen = () => {
     password: "",
   });
 
-  // physical back click 
- useEffect(() => {
+  // physical back click
+  useEffect(() => {
     const backAction = () => {
-     if(activeTab == 'register'){
-      if(activeRegTab != 'none'){
-        console.log('kkkkk');
-        
-        setSelectedTab('none')
-        setActiveRegTab('none')
+      if (activeTab == "register") {
+        if (activeRegTab != "none") {
+          console.log("kkkkk");
+
+          setSelectedTab("none");
+          setActiveRegTab("none");
+        }
       }
-     }
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -58,33 +53,53 @@ const MainAuthScreen = () => {
       backAction
     );
 
-    return () => backHandler.remove(); 
+    return () => backHandler.remove();
   }, []);
 
-  console.log('conec',activeRegTab,activeTab);
-  
-  
+  const OnLoginPress = async () => {
+    const data = {
+      username: "",
+      email: loginData.username,
+      password: loginData.password,
+    };
+
+    try {
+      const response = await usePostLogin(data);
+
+      if (response) {
+        console.log("Login successful:", response);
+      } else {
+        console.log("Login failed:");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
+
+  const inputStyle = `flex-row items-center border border-gray-300 rounded-3xl h-13 px-4 w-full gap-3`;
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F2FFF4] h-full w-full">
+    <SafeAreaView className="flex-1 bg-LoginBG h-full w-full">
       <ImageBackground
         source={require("../../assets/AuthScreenAssets/BgLogin.png")}
-        className="h-[400px] w-[430px]"
+        className="w-full h-[45%]"
+        resizeMode="contain"
       >
         {/* back button */}
         <BackButton />
         {/* Heading Data */}
-        <View className="absolute left-[24px] top-[95px] flex-column gap-[8px] w-[210px] h-[180px]">
+        <View className="absolute left-6 top-24 w-1/2 space-y-2">
           <Image
             source={require("../../assets/logo.png")}
             className="h-[68px] w-[68px]"
+            resizeMode="contain"
           />
-          <Text className="text-2xl font-bold w-[166px]">
+          <Text className="text-2xl font-bold w-10/12">
             {activeTab === "login"
               ? "Go ahead and set up your account"
               : "Create your account"}
           </Text>
-          <Text className="text-xs font-medium color-[#94A3B8]">
+          <Text className="text-xs font-medium color-textgray">
             Sign in-up to enjoy the best managing experience
           </Text>
         </View>
@@ -93,10 +108,12 @@ const MainAuthScreen = () => {
           {activeTab === "login" ? (
             <>
               <Image
+                resizeMode="contain"
                 source={require("../../assets/AuthScreenAssets/Saly-29.png")}
-                className="h-[265px] w-[341.69px] absolute top-[2.92px] left-[98.14px] rotate-[-41.7deg]"
+                className="h-64 w-80 rotate-[-12deg]"
               />
               <Image
+                resizeMode="contain"
                 className="absolute left-[149px] top-[80px] h-[315px] w-[250px]"
                 source={require("../../assets/AuthScreenAssets/Saly-11.png")}
               />
@@ -104,21 +121,25 @@ const MainAuthScreen = () => {
           ) : activeRegTab === "none" ? (
             <>
               <Image
+                resizeMode="contain"
                 source={require("../../assets/AuthScreenAssets/Saly-43.png")}
-                className="h-[86.23px] w-[86.23px] absolute top-[29px] left-[97px] rotate-[-3.5deg]"
+                className="h-30 w-30 absolute top-[29px] left-[97px] rotate-[-3.5deg]"
               />
               <Image
-                className="absolute left-[166px] top-[11px] h-[500px] w-[230px]"
+                resizeMode="contain"
+                className="absolute left-[166px] top-[11px] h-28% w-60"
                 source={require("../../assets/AuthScreenAssets/Saly-15.png")}
               />
             </>
           ) : (
             <>
               <Image
+                resizeMode="contain"
                 source={require("../../assets/AuthScreenAssets/Saly-23.png")}
                 className="h-[300px] w-[300px] absolute top-[-15px] left-[90px]"
               />
               <Image
+                resizeMode="contain"
                 className="absolute left-[110px] top-[69px] h-[300px] w-[300px]"
                 source={require("../../assets/AuthScreenAssets/Saly-38.png")}
               />
@@ -157,30 +178,40 @@ const MainAuthScreen = () => {
           >
             {/* if Login Tab  */}
             {activeTab === "login" ? (
-              <View className="space-y-4 gap-[10px]">
+              <View className="space-y-4 ">
                 {/* UserName input */}
-                <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]">
+                <View className={inputStyle}>
                   <Ionicons
                     name="person-outline"
                     size={20}
-                    color="#139E75"
+                    color="gray"
                     className="ml-[8px]"
                   />
                   <TextInput
                     placeholder="Username or Email ID"
                     className="ml-2 flex-1 h-full"
                     value={loginData.username}
-                    onChange={(text) =>
-                      setLoginData({ ...loginData, username: text })
-                    }
+                    onChangeText={(text) => {
+                      setLoginData({ ...loginData, username: text });
+
+                      if (text === "" || emailValidation.test(text)) {
+                        setError({ ...error, username: "" });
+                      } else {
+                        setError({ ...error, username: "Enter a valid email" });
+                      }
+                    }}
                   />
                 </View>
+                <Text className="text-sm color-numberRed p-1">
+                  {error.username}
+                </Text>
+
                 {/* pwd input */}
-                <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px]">
+                <View className={inputStyle}>
                   <SimpleLineIcons
                     name="lock"
                     size={24}
-                    color="#139E75"
+                    color="gray"
                     className="ml-[8px]"
                   />
                   <TextInput
@@ -188,11 +219,24 @@ const MainAuthScreen = () => {
                     className="ml-2 flex-1 h-full"
                     secureTextEntry
                     value={loginData.password}
-                    onChange={(text) =>
-                      setLoginData({ ...loginData, password: text })
-                    }
+                    onChangeText={(text) => {
+                      setLoginData({ ...loginData, password: text });
+
+                      if (text === "" || PasswordValidation.test(text)) {
+                        setError({ ...error, password: "" });
+                      } else {
+                        setError({
+                          ...error,
+                          password:
+                            "Password must contain a special character, a number, a lowercase and an uppercase letter",
+                        });
+                      }
+                    }}
                   />
                 </View>
+                <Text className="text-sm color-numberRed p-2">
+                  {error.password}
+                </Text>
                 {/* RememberPwd & Forgot Pwd */}
                 <View className="flex-row justify-between items-center h-[20px] w-[376px] mt-[8px] mb-[7px]">
                   <TouchableOpacity
@@ -220,12 +264,13 @@ const MainAuthScreen = () => {
                 </View>
                 {/* login btn */}
                 <TouchableOpacity
-                  className={`h-[56px] w-[378px] bg-[#139E75] rounded-[32px] items-center justify-center ${loginData.username == "" && loginData.password == "" ? "opacity-[0.5]" : "opacity-[1]"}`}
+                  className={`h-14 w-full bg-mint rounded-3xl items-center justify-center mt-6 ${loginData.username == "" && loginData.password == "" ? "opacity-[0.5]" : "opacity-[1]"}`}
                   disabled={
                     loginData.username == "" && loginData.password == ""
                       ? true
                       : false
                   }
+                  onPress={OnLoginPress}
                 >
                   <Text className="text-white font-medium">Login</Text>
                 </TouchableOpacity>
@@ -282,10 +327,10 @@ const MainAuthScreen = () => {
                       {/* Individual */}
                       <TouchableOpacity
                         onPress={() => setSelectedTab("single")}
-                        className={`flex-column items-center justify-center  border ${selectedTab === "single" ? "border-[#139E75]" : "border-gray-300"} rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]`}
+                        className={`h-14 w-full rounded-3xl items-center justify-center mt-2 ${selectedTab === "single" ? "border-main" : "border-gray-300"} border border-gray`}
                       >
                         <Text
-                          className={`${selectedTab === "single" ? "color-[#139E75]" : "color-gray-500"}`}
+                          className={`${selectedTab === "single" ? "color-main" : "color-gray-500"}`}
                         >
                           Individual
                         </Text>
@@ -293,10 +338,10 @@ const MainAuthScreen = () => {
                       {/* Brand/Business */}
                       <TouchableOpacity
                         onPress={() => setSelectedTab("brand")}
-                        className={`flex-column items-center justify-center  border ${selectedTab === "brand" ? "border-[#139E75]" : "border-gray-300"}  rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]`}
+                        className={`h-14 w-full rounded-3xl items-center justify-center mt-2 ${selectedTab === "brand" ? "border-main" : "border-gray-300"}  border border-gray`}
                       >
                         <Text
-                          className={`${selectedTab === "brand" ? "color-[#139E75]" : "color-gray-500"}`}
+                          className={`${selectedTab === "brand" ? "color-main" : "color-gray-500"}`}
                         >
                           Brand/Business
                         </Text>
@@ -304,10 +349,10 @@ const MainAuthScreen = () => {
                       {/* Institution/Organization */}
                       <TouchableOpacity
                         onPress={() => setSelectedTab("org")}
-                        className={`flex-column items-center justify-center  border ${selectedTab === "org" ? "border-[#139E75]" : "border-gray-300"}  rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]`}
+                        className={`h-14 w-full rounded-3xl items-center justify-center mt-2 ${selectedTab === "org" ? "border-main" : "border-gray-300"}  border border-gray`}
                       >
                         <Text
-                          className={`${selectedTab === "org" ? "color-[#139E75]" : "color-gray-500"}`}
+                          className={`${selectedTab === "org" ? "color-main" : "color-gray-500"}`}
                         >
                           Institution/Organization
                         </Text>
@@ -318,7 +363,7 @@ const MainAuthScreen = () => {
                         disabled={selectedTab === "none" ? true : false}
                         className={`
                     ${selectedTab === "none" ? "opacity-[0.5]" : "opacity-[1]"}
-                    h-[56px] w-[378px] bg-[#139E75] rounded-[32px] items-center justify-center ${activeRegTab == "single" || activeRegTab == "none" ? "mt-[15px]" : "mt-[5px]"}`}
+                  h-14 w-full bg-mint rounded-3xl items-center justify-center mt-6 ${activeRegTab == "single" || activeRegTab == "none" ? "mt-[15px]" : "mt-[5px]"}`}
                       >
                         <Text className="text-white font-medium">Continue</Text>
                       </TouchableOpacity>
@@ -335,138 +380,3 @@ const MainAuthScreen = () => {
 };
 
 export default MainAuthScreen;
-
-export const FormInputs = ({ active }) => {
-  const [showPwd, setShowPwd] = useState(true);
-  const [showConfirmPwd, setShowConfirmPwd] = useState(true);
-  const nav = useNavigation();
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    website: "",
-    orgName: "",
-  });
-
-  return (
-    <>
-      {/* USERNAME */}
-      <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]">
-        <Ionicons
-          name="person-outline"
-          size={20}
-          color="#139E75"
-          className="ml-[8px]"
-        />
-        <TextInput placeholder="Username" className="ml-2 flex-1 h-full" />
-        <TouchableOpacity>
-          <Ionicons
-            name="checkmark-circle"
-            size={20}
-            color="#dadada"
-            className="mr-[8px]"
-          />
-        </TouchableOpacity>
-      </View>
-
-      {/* Organization/Brand */}
-      {(active === "brand" || active === "org") && (
-        <>
-          <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]">
-            <Octicons
-              name="organization"
-              size={20}
-              color="#139E75"
-              className="ml-[8px]"
-            />
-            <TextInput
-              placeholder={
-                active == "brand" ? "Brand Name" : "Organization Name"
-              }
-              className="ml-2 flex-1 h-full"
-            />
-          </View>
-
-          {/* Website */}
-          <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]">
-            <MaterialCommunityIcons
-              name="web"
-              size={20}
-              color="#139E75"
-              className="ml-[8px]"
-            />
-            <TextInput placeholder="Website" className="ml-2 flex-1 h-full" />
-          </View>
-        </>
-      )}
-
-      {/* EMAIL_ID */}
-
-      <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]">
-        <Fontisto name="email" size={20} color="#139E75" className="ml-[8px]" />
-        <TextInput placeholder="Email-ID" className="ml-2 flex-1 h-full" />
-        <TouchableOpacity
-          className="mr-[8px] h-[22px] w-[57px] bg-[#139E75] items-center justify-center rounded-[6px]"
-          onPress={() => nav.navigate("OTPVerification")}
-        >
-          <Text className="text-white text-sm font-semiBold">Verify</Text>
-        </TouchableOpacity>
-      </View>
-      {/* PASSWORD */}
-
-      <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]">
-        <SimpleLineIcons
-          name="lock"
-          size={20}
-          color="#139E75"
-          className="ml-[8px]"
-        />
-        <TextInput
-          placeholder="Password"
-          className="ml-2 flex-1 h-full"
-          secureTextEntry={showPwd}
-        />
-        <TouchableOpacity onPress={() => setShowPwd(!showPwd)}>
-          {showPwd ? (
-            <LucideEyeClosed size={20} color="#dadada" className="mr-[8px]" />
-          ) : (
-            <LucideEye size={20} color="#dadada" className="mr-[8px]" />
-          )}
-        </TouchableOpacity>
-      </View>
-      {/* CONFIRM PASSWORD */}
-
-      <View className="flex-row items-center border border-gray-300 rounded-[32px] h-[52px] px-3 w-[378px] gap-[12px]">
-        <SimpleLineIcons
-          name="lock"
-          size={20}
-          color="#139E75"
-          className="ml-[8px]"
-        />
-        <TextInput
-          placeholder="Confirm Password"
-          className="ml-2 flex-1 h-full"
-          secureTextEntry={showConfirmPwd}
-        />
-        <TouchableOpacity onPress={() => setShowConfirmPwd(!showConfirmPwd)}>
-          {showConfirmPwd ? (
-            <LucideEyeClosed size={20} color="#dadada" className="mr-[8px]" />
-          ) : (
-            <LucideEye size={20} color="#dadada" className="mr-[8px]" />
-          )}
-        </TouchableOpacity>
-      </View>
-
-      {/* Register btn */}
-      <TouchableOpacity
-        disabled={active === "none" ? true : false}
-        className={`
-                   
-        h-[56px] w-[378px] bg-[#139E75] rounded-[32px] items-center justify-center ${active === "single" || active === "none" ? "mt-[15px]" : "mt-[5px]"}`}
-      >
-        <Text className="text-white font-medium">Register</Text>
-      </TouchableOpacity>
-    </>
-  );
-};

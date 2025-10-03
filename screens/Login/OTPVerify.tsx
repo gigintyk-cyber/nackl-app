@@ -1,6 +1,5 @@
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Image, SafeAreaView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { BackButton } from "../components/BackButton";
@@ -12,6 +11,7 @@ const OTPVerification = () => {
 
   const [timer, setTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
+
   useEffect(() => {
     let interval = null;
     if (timer > 0) {
@@ -36,44 +36,56 @@ const OTPVerification = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F2FFF4] h-full w-full">
+    <SafeAreaView className="flex-1 bg-LoginBG">
       <BackButton />
-      <Image
-        source={require("../../assets/AuthScreenAssets/OTP.png")}
-        className="h-[200px] w-[200px] absolute top-[160px] left-[100px]"
-      />
-      <View className="h-[420px] w-[430px] bg-white absolute top-[420px] rounded-tl-[40px] rounded-tr-[40px] items-center">
-        <View className="absolute left-[24px] mt-[20px] flex-column gap-[8px] w-[300px] h-[180px]">
+
+      {/* Illustration */}
+      <View className="items-center mt-20">
+        <Image
+          source={require("../../assets/AuthScreenAssets/OTP.png")}
+          className="w-1/2 h-2/2"
+          resizeMode="contain"
+        />
+      </View>
+
+      {/* Bottom Card */}
+      <View className="flex-1 bg-white rounded-t-3xl mt-[-10] items-center pt-8 px-6">
+        {/* Header */}
+        <View className="flex-row items-center w-full mb-6 space-x-4">
           <Image
             source={require("../../assets/AuthScreenAssets/image.png")}
-            className="h-[68px] w-[68px] "
+            className="w-16 h-16"
+            resizeMode="contain"
           />
-          <Text className="text-2xl font-bold ">OTP Verification</Text>
-          <Text className="text-xs font-medium color-[#94A3B8]">
-            Verify with your OTP to set a new password
-          </Text>
+          <View className="flex-1">
+            <Text className="text-2xl font-bold text-black">OTP Verification</Text>
+            <Text className="text-sm font-medium text-gray-400">
+              Verify with your OTP to set a new password
+            </Text>
+          </View>
         </View>
-        <View className="mt-[170px] w-[383px] items-center mr-[30px]">
-            {/* OTP BOX */}
-          <OtpBox length={6} onChange={(pin) => console.log("llll", pin)} />
+
+        {/* OTP Input */}
+        <View className="w-full items-center mt-8">
+          <OtpBox length={6} onChange={(pin) => console.log("OTP:", pin)} />
 
           {/* Verify Button */}
           <TouchableOpacity
             onPress={() => nav.navigate("NewPassword")}
-            className="h-[56px] w-[378px] bg-[#139E75] rounded-[32px] items-center justify-center mt-[30px]"
+            className="mt-6 h-14 w-full bg-mint rounded-2xl items-center justify-center"
           >
-            <Text className="text-white font-medium">Verify</Text>
+            <Text className="text-white font-medium text-lg">Verify</Text>
           </TouchableOpacity>
-        </View>
 
-        {/* Resend OTP */}
-        <View className="flex-row h-[22px] w-[1000px] mt-[10px] align-right top-[220px] left-[300px] absolute">
-          <TouchableOpacity onPress={handleResend} disabled={!canResend}>
-            <Text className="color-[#dadada] text-sm">Resend </Text>
-          </TouchableOpacity>
-          <Text className="color-[#D72F2F] text-sm">
-            {canResend ? "00 : 00" : formatTime(timer)}
-          </Text>
+          {/* Resend OTP */}
+          <View className="flex-row mt-4 space-x-2">
+            <TouchableOpacity onPress={handleResend} disabled={!canResend}>
+              <Text className="text-gray-400 text-sm">Resend</Text>
+            </TouchableOpacity>
+            <Text className="text-red-500 text-sm">
+              {canResend ? "00:00" : formatTime(timer)}
+            </Text>
+          </View>
         </View>
       </View>
     </SafeAreaView>

@@ -22,6 +22,7 @@ export const OtpBox = ({ length = 6, onChange }) => {
         onChangeText={handleChange}
         keyboardType="number-pad"
         maxLength={length}
+         autoFocus={true}
         className="absolute opacity-0"
       />
 

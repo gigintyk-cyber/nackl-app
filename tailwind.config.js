@@ -7,6 +7,13 @@ module.exports = {
       colors: {
         mint: "#1AAD7A",   
         secondary: "#ECFDF7",
+        main : "#139E75",
+        opacitygray:"#dadada",
+        numberRed : '#D72F2F',
+        Primary950:"#1AAD7A",
+        textgray:"#94A3B8",
+        LoginBG : "#F2FFF4"
+
       },
     },
   },
